@@ -1,0 +1,2 @@
+docopt==0.6.1
+hipchat==0.0.1

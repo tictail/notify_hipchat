@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+"""
+Usage:
+    notify_hipchat <token> <room_ids> <message> [--color=<color>] [--name=<name>]
+    notify_hipchat --help
+
+Options:
+  --help            Show this screen.
+  --color=<color>   Color of message in HipChat [default: yellow].
+  --name=<name>     Name to use in HipChat [default: Nagios].
+
+"""
+
+from docopt import docopt
+from hipchat import config
+from hipchat.room import Room
+
+def send_message(arguments):
+    config.token = arguments.get('<token>')
+    rooms = arguments.get('<room_ids>').split(',')
+
+    for room in rooms:
+        x = {
+            'room_id': room,
+            'from': arguments.get('--name'),
+            'message': arguments.get('<message>'),
+            'color': arguments.get('--color')
+        }
+
+        try:
+            Room.message(**x)
+        except Exception as e:
+            print('Failed sending message to room %s: %s' % (room, e))
+
+
+if __name__ == '__main__':
+    arguments = docopt(__doc__)
+    send_message(arguments)
